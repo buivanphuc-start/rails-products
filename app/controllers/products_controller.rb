@@ -1,6 +1,17 @@
 class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
 
+
+
+  def who_bought
+    @product = Product.find(params[:id])
+    @latest_order = @product.orders.order(:updated_at).last
+    if stale?(@latest_order)
+      respond_to do |format|
+        format.atom
+      end
+    end
+  end
   # GET /products
   # GET /products.json
   def index
@@ -20,7 +31,7 @@ class ProductsController < ApplicationController
   # GET /products/1/edit
   def edit
   end
-
+  
   # POST /products
   # POST /products.json
   def create
@@ -42,8 +53,11 @@ class ProductsController < ApplicationController
   def update
     respond_to do |format|
       if @product.update(product_params)
-        format.html { redirect_to @product, notice: 'Product was successfully updated.' }
+        format.html { redirect_to product_url, notice: 'Product was successfully updated.' }
         format.json { render :show, status: :ok, location: @product }
+        
+        @product = Product.all
+        #ActionCable.server.broadcast 'products', html: render_to_string('store/index', layout: false)
       else
         format.html { render :edit }
         format.json { render json: @product.errors, status: :unprocessable_entity }
