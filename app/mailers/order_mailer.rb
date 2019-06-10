@@ -1,5 +1,5 @@
 class OrderMailer < ApplicationMailer
-  default from: 'San Ruby <depot@example.com>'
+  default from: 'Đặng Phương Linh<buivanphuc11ss@gmail.com>'
   
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
